@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import { useApp } from "@/lib/context/AppProvider";
 
 /** Stats data for the animated counters */
 const stats = [
@@ -42,11 +43,12 @@ function useCounter(target, isInView) {
 
 /** Individual stat counter component. */
 function StatCounter({ value, suffix, label, isInView }) {
+  const { settings } = useApp();
   const count = useCounter(value, isInView);
 
   return (
     <div className="text-center">
-      <p className="text-4xl sm:text-5xl font-bold text-[#C5A46D]">
+      <p className="text-4xl sm:text-5xl font-bold" style={{ color: settings.primaryColor }}>
         {count.toLocaleString()}
         {suffix}
       </p>

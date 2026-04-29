@@ -3,12 +3,14 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import { useApp } from "@/lib/context/AppProvider";
 
 /**
  * Image gallery with main image, left/right arrow navigation,
  * and clickable thumbnails. Animates transitions between images.
  */
 export default function ImageGallery({ images, title }) {
+  const { settings } = useApp();
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const goLeft = () =>
@@ -77,9 +79,10 @@ export default function ImageGallery({ images, title }) {
             onClick={() => setSelectedIndex(i)}
             className={`relative h-20 md:h-24 rounded-lg overflow-hidden transition-all ${
               i === selectedIndex
-                ? "ring-2 ring-[#C5A46D] ring-offset-2"
+                ? "ring-offset-2"
                 : "opacity-60 hover:opacity-100"
             }`}
+            style={i === selectedIndex ? { boxShadow: `0 0 0 2px ${settings.primaryColor}` } : undefined}
           >
             <Image
               src={img}

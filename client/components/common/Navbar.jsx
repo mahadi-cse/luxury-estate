@@ -43,12 +43,20 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-[76px]">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div
-              className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-serif font-bold text-lg"
-              style={{ backgroundColor: settings.primaryColor }}
-            >
-              {settings.logoAccent.charAt(0)}
-            </div>
+            {settings.logoImage ? (
+              <img
+                src={settings.logoImage}
+                alt="Logo"
+                className="w-9 h-9 rounded-lg object-contain"
+              />
+            ) : (
+              <div
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-serif font-bold text-lg"
+                style={{ backgroundColor: settings.primaryColor }}
+              >
+                {settings.logoAccent.charAt(0)}
+              </div>
+            )}
             <div className="flex flex-col leading-tight">
               <span
                 className={`text-lg font-serif font-bold tracking-tight ${
@@ -194,7 +202,7 @@ export default function Navbar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              Admin Panel
+              Dashboard
             </Link>
           </div>
         </div>

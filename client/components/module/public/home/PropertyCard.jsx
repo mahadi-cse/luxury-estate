@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useApp } from "@/lib/context/AppProvider";
 
 /**
  * Formats a number as BDT currency.
@@ -28,6 +29,7 @@ function formatPrice(price, type) {
  * and a smooth hover scale + shadow effect. Links to the detail page.
  */
 export default function PropertyCard({ property, index }) {
+  const { settings } = useApp();
   return (
     <Link href={`/properties/${property.id}`}>
       <motion.div
@@ -48,13 +50,14 @@ export default function PropertyCard({ property, index }) {
           />
 
           {/* Badges */}
-          <div className="absolute top-4 left-4 flex gap-2">
+          <div className="absolute top-4 left-4 flex flex-wrap gap-2">
             <span
               className={`px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide ${
                 property.type === "sale"
-                  ? "bg-[#C5A46D] text-white"
+                  ? "text-white"
                   : "bg-white text-gray-800"
               }`}
+              style={property.type === "sale" ? { backgroundColor: settings.primaryColor } : undefined}
             >
               For {property.type}
             </span>
@@ -62,6 +65,20 @@ export default function PropertyCard({ property, index }) {
               {property.category}
             </span>
           </div>
+          {/* Status Badge — top right */}
+          {property.status && (
+            <span
+              className={`absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold capitalize ${
+                property.status === "ongoing"
+                  ? "bg-green-500 text-white"
+                  : property.status === "completed"
+                  ? "bg-blue-500 text-white"
+                  : "bg-amber-500 text-white"
+              }`}
+            >
+              {property.status}
+            </span>
+          )}
         </div>
 
         {/* Card Body */}
@@ -73,7 +90,7 @@ export default function PropertyCard({ property, index }) {
             {property.title}
           </h3>
           <p className="mt-1 text-sm text-gray-500 flex items-center gap-1">
-            <svg className="w-4 h-4 text-[#C5A46D]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4" style={{ color: settings.primaryColor }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>

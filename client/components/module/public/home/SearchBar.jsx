@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useApp } from "@/lib/context/AppProvider";
 
 /** Bangladeshi locations for the dropdown */
 const locations = [
@@ -32,6 +33,7 @@ const priceRanges = [
  * Overlaps the hero section with a negative margin.
  */
 export default function SearchBar() {
+  const { settings } = useApp();
   const [listingType, setListingType] = useState("buy");
 
   return (
@@ -48,9 +50,10 @@ export default function SearchBar() {
             onClick={() => setListingType("buy")}
             className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
               listingType === "buy"
-                ? "bg-[#C5A46D] text-white shadow-sm"
+                ? "text-white shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             }`}
+            style={listingType === "buy" ? { backgroundColor: settings.primaryColor } : undefined}
           >
             Buy
           </button>
@@ -58,9 +61,10 @@ export default function SearchBar() {
             onClick={() => setListingType("rent")}
             className={`px-5 py-2 rounded-md text-sm font-medium transition-all ${
               listingType === "rent"
-                ? "bg-[#C5A46D] text-white shadow-sm"
+                ? "text-white shadow-sm"
                 : "text-gray-600 hover:text-gray-900"
             }`}
+            style={listingType === "rent" ? { backgroundColor: settings.primaryColor } : undefined}
           >
             Rent
           </button>
@@ -76,7 +80,7 @@ export default function SearchBar() {
             <input
               type="text"
               placeholder="Search properties..."
-              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#C5A46D]/30 focus:border-[#C5A46D] transition-all"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all"
             />
           </div>
 
@@ -85,7 +89,7 @@ export default function SearchBar() {
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
               Location
             </label>
-            <select className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#C5A46D]/30 focus:border-[#C5A46D] transition-all appearance-none bg-white">
+            <select className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all appearance-none bg-white">
               {locations.map((loc) => (
                 <option key={loc} value={loc}>
                   {loc}
@@ -99,7 +103,7 @@ export default function SearchBar() {
             <label className="block text-xs font-medium text-gray-500 mb-1.5">
               Price Range
             </label>
-            <select className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#C5A46D]/30 focus:border-[#C5A46D] transition-all appearance-none bg-white">
+            <select className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all appearance-none bg-white">
               {priceRanges.map((range) => (
                 <option key={range} value={range}>
                   {range}
@@ -110,7 +114,7 @@ export default function SearchBar() {
 
           {/* Search Button */}
           <div className="flex items-end">
-            <button className="w-full bg-[#C5A46D] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#b08f5a] transition-colors shadow-md hover:shadow-lg">
+            <button className="w-full text-white px-6 py-3 rounded-lg font-medium hover:brightness-110 transition-colors shadow-md hover:shadow-lg" style={{ backgroundColor: settings.primaryColor }}>
               Search
             </button>
           </div>

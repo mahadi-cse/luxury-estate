@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useApp } from "@/lib/context/AppProvider";
-import ImageUploader from "./ImageUploader";
+import ImageUploader from "@/components/module/admin/shared/ImageUploader";
 
 const emptyProperty = {
   title: "",
@@ -10,6 +10,7 @@ const emptyProperty = {
   location: "",
   type: "sale",
   category: "apartment",
+  status: "upcoming",
   bedrooms: 0,
   bathrooms: 0,
   sqft: 0,
@@ -125,6 +126,14 @@ export default function PropertyForm({ property, onClose }) {
             <option value="building">Building</option>
             <option value="villa">Villa</option>
             <option value="studio">Studio</option>
+          </select>
+        </div>
+        <div>
+          <label className={labelClass}>Status</label>
+          <select className={inputClass} value={form.status} onChange={(e) => set("status", e.target.value)}>
+            <option value="upcoming">Upcoming</option>
+            <option value="ongoing">Ongoing</option>
+            <option value="completed">Completed</option>
           </select>
         </div>
         <div>

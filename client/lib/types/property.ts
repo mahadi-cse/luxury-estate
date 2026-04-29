@@ -26,6 +26,7 @@ export interface Property {
   location: string;
   type: "sale" | "rent";
   category: "building" | "apartment" | "villa" | "studio";
+  status: "ongoing" | "completed" | "upcoming";
   bedrooms: number;
   bathrooms: number;
   sqft: number;
