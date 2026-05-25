@@ -1,87 +1,118 @@
-# LuxeEstate BD — Real Estate Platform
+# LuxeEstate BD — Full-Stack Real Estate Platform
 
-A modern, full-featured real estate website built for the Bangladeshi market. Includes a public-facing property listing site and an admin panel for managing properties, site theme, and branding.
+A modern, full-featured real estate website built for the Bangladeshi market. Includes a public-facing property listing site, a comprehensive admin panel for managing properties, site theme, branding, and a robust Express/PostgreSQL backend API.
 
 ## Tech Stack
 
+### Frontend (Client)
 - **Next.js 16** (App Router, Turbopack)
 - **React 19**
-- **TypeScript** (types & data) + **JSX** (components & pages)
-- **Tailwind CSS 4**
+- **TypeScript** & **JSX**
+- **Tailwind CSS 4** (Pure CSS, no third-party UI libraries)
 - **Framer Motion** (animations)
 
-No third-party UI libraries — pure Tailwind CSS.
+### Backend (Server)
+- **Node.js** & **Express.js**
+- **PostgreSQL** (Database)
+- **Prisma ORM (v7)** (with `@prisma/adapter-pg` & connection pooling)
+- **Multer** (File uploads)
+
+## System Architecture
+
+```mermaid
+flowchart TD
+    Client_Public["🌍 Public Site (Next.js)"]
+    Client_Admin["🛠️ Admin Panel (Next.js)"]
+    
+    Server_API["🔌 Express API Router"]
+    Server_Modules["📦 Feature Modules"]
+    Server_Prisma["⚙️ Prisma ORM"]
+    
+    DB_Postgres[("🐘 PostgreSQL DB")]
+
+    Client_Public -->|"REST (JSON)"| Server_API
+    Client_Admin -->|"REST (JSON)"| Server_API
+    
+    Server_API --> Server_Modules
+    Server_Modules --> Server_Prisma
+    Server_Prisma -->|"Prisma Client"| DB_Postgres
+
+    classDef normalStyle stroke:#4f46e5,stroke-width:2px,fill:#e0e7ff,color:#1e1b4b;
+    classDef successStyle stroke:#10b981,stroke-width:2px,fill:#d1fae5,color:#064e3b;
+    classDef dbStyle stroke:#f59e0b,stroke-width:2px,fill:#fef3c7,color:#78350f;
+
+    class Client_Public,Client_Admin normalStyle;
+    class Server_API,Server_Modules,Server_Prisma successStyle;
+    class DB_Postgres dbStyle;
+```
 
 ## Project Structure
 
-```
+```text
 ├── client/                         # Next.js frontend
-│   ├── app/                        # App Router pages
-│   │   ├── page.jsx                # Home
-│   │   ├── buy/                    # Properties for sale
-│   │   ├── rent/                   # Properties for rent
-│   │   ├── sell/                   # Sell your property
-│   │   ├── agents/                 # Agent listing
-│   │   ├── list-property/          # Public listing form
-│   │   ├── properties/[id]/        # Property detail
-│   │   └── admin/                  # Admin panel
-│   │       ├── page.jsx            # Dashboard
-│   │       ├── properties/         # CRUD management
-│   │       └── settings/           # Theme & logo
-│   ├── components/
-│   │   ├── common/                 # Shared (Navbar, Footer, PageHero)
-│   │   └── module/
-│   │       ├── admin/              # Admin components
-│   │       └── public/
-│   │           ├── home/           # Homepage sections
-│   │           └── property/       # Property detail components
-│   └── lib/
-│       ├── types/                  # TypeScript interfaces
-│       ├── data/                   # Mock data
-│       └── context/                # React Context (state management)
-└── server/                         # Backend (not yet implemented)
+│   ├── app/                        # App Router pages (Public & Admin)
+│   ├── components/                 # Shared & Module-specific React components
+│   └── lib/                        # TypeScript types, context, API client config
+└── server/                         # Express backend API
+    ├── prisma/                     # Database schema & seed scripts
+    ├── src/
+    │   ├── config/                 # DB connections
+    │   ├── middleware/             # Error handling & file upload config
+    │   ├── modules/                # Feature modules (Property, Customer, Sale, Agent, etc.)
+    │   └── utils/                  # API response formatting
+    └── uploads/                    # Local storage for uploaded images
 ```
 
 ## Features
 
 ### Public Site
-- Responsive homepage with hero, search bar, featured properties, stats, and agent section
-- Property detail pages with image gallery (arrow navigation + thumbnails), conditional building/apartment info
-- Dedicated pages for Buy, Rent, Sell, Agents, and List Property
-- BDT currency formatting with lakh/crore shorthand
-- Framer Motion scroll animations throughout
+- Responsive homepage with hero, search bar, featured properties, stats, and agent section.
+- Property detail pages with image gallery, and dynamic building/apartment specific details.
+- Dedicated pages for Buy, Rent, Sell, Agents, and List Property submissions.
+- BDT currency formatting with lakh/crore shorthand.
 
 ### Admin Panel (`/admin`)
-- **Dashboard** — property stats overview and quick actions
-- **Property Management** — add, edit, delete properties with category-specific fields (building: floors/units/developer, apartment: floor/facing/furnishing)
-- **Image Upload** — drag-and-drop uploader with local blob preview (server upload ready when backend is built)
-- **Site Settings** — primary color picker with presets, logo text editor, live preview
-- All changes persist in localStorage and reflect on the public site immediately
+- **Dashboard** — Property stats overview, sales revenue, and quick actions.
+- **Property Management** — CRUD operations for properties, building specifics, and apartment features.
+- **Customer & Sales Management** — Track payments, rent, and purchase history.
+- **Image Upload** — Drag-and-drop uploader connecting directly to the server endpoint.
+- **Site Settings** — Primary color picker with presets and dynamic text/image logo settings.
 
-### Theme System
-- Admin-controlled primary color applied site-wide via CSS variable (`--color-primary`)
-- Dynamic logo text (accent word + main word) used in Navbar, Footer, and admin sidebar
-- Hydration-safe: defaults on server render, localStorage values applied after mount
+### API & Database
+- Modular RESTful API built on Express.
+- 9 dedicated business modules: `Property`, `Customer`, `Sale`, `Agent`, `Settings`, `Contact`, `Listing Request`, `Upload`, and `Dashboard`.
+- Relational database schema handling complex one-to-one and one-to-many associations (e.g., properties to sales, customers to payments).
 
 ## Getting Started
 
+### 1. Database Setup
+Ensure you have PostgreSQL running locally (or remotely) and a database created (e.g., `luxe_estate`).
+
+### 2. Server Setup (Backend)
+```bash
+cd server
+npm install
+```
+
+Configure your `.env` file in the `server` directory:
+```env
+DATABASE_URL="postgresql://username:password@localhost:5432/luxe_estate?schema=public"
+PORT=5000
+```
+
+Run database migrations and seed data:
+```bash
+npm run db:push
+npm run db:seed
+npm run dev
+```
+The API server will run at `http://localhost:5000`.
+
+### 3. Client Setup (Frontend)
+Open a new terminal session.
 ```bash
 cd client
 npm install
 npm run dev
 ```
-
 Open [http://localhost:3000](http://localhost:3000) for the public site and [http://localhost:3000/admin](http://localhost:3000/admin) for the admin panel.
-
-## Build
-
-```bash
-npm run build
-npm start
-```
-
-## Notes
-
-- All data is mock — no backend API calls. Properties and settings are stored in localStorage.
-- The `server/` directory is a placeholder for the future backend.
-- Images use Unsplash URLs. The admin image uploader creates local blob URLs for preview; actual upload will connect to the server once built.

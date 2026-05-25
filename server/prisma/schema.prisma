@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Property ──────────────────────────────────────────────
+model Property {
+  id          String   @id @default(cuid())
+  title       String
+  price       Float
+  location    String
+  type        String   // "sale" | "rent"
+  category    String   // "building" | "apartment" | "villa" | "studio"
+  status      String   @default("ongoing") // "ongoing" | "completed" | "upcoming"
+  bedrooms    Int      @default(0)
+  bathrooms   Int      @default(0)
+  sqft        Int      @default(0)
+  imageUrl    String   @default("")
+  description String   @default("")
+  features    String[] @default([])
+  yearBuilt   Int      @default(2024)
+  garage      Int      @default(0)
+  galleryImages String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  buildingDetail  BuildingDetail?
+  apartmentDetail ApartmentDetail?
+  sales           PropertySale[]
+
+  @@map("properties")
+}
+
+model BuildingDetail {
+  id             String   @id @default(cuid())
+  propertyId     String   @unique
+  totalFloors    Int      @default(0)
+  totalUnits     Int      @default(0)
+  availableUnits Int      @default(0)
+  floorPlan      String   @default("")
+  buildingAge    String   @default("")
+  developer      String   @default("")
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("building_details")
+}
+
+model ApartmentDetail {
+  id              String @id @default(cuid())
+  propertyId      String @unique
+  floor           Int    @default(0)
+  totalFloors     Int    @default(0)
+  facing          String @default("")
+  balconies       Int    @default(0)
+  furnishing      String @default("unfurnished") // "furnished" | "semi-furnished" | "unfurnished"
+  maintenanceCost Float  @default(0)
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@map("apartment_details")
+}
+
+// ─── Customer ──────────────────────────────────────────────
+model Customer {
+  id                  String   @id @default(cuid())
+  name                String
+  phone               String
+  email               String
+  profession          String   @default("")
+  address             String   @default("")
+  nid                 String   @default("")
+  joinedDate          String   @default("")
+  interests           String[] @default([])
+  purchasedProperties String[] @default([])
+  rentedProperties    String[] @default([])
+  totalDue            Float    @default(0)
+  totalPaid           Float    @default(0)
+  notes               String   @default("")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  payments Payment[]
+  sales    PropertySale[]
+
+  @@map("customers")
+}
+
+model Payment {
+  id         String @id @default(cuid())
+  customerId String
+  date       String
+  amount     Float
+  method     String // "bank" | "bkash" | "cash" | "check"
+  status     String @default("pending") // "paid" | "pending" | "overdue"
+  note       String @default("")
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ─── Sales ─────────────────────────────────────────────────
+model PropertySale {
+  id         String @id @default(cuid())
+  propertyId String
+  customerId String
+  type       String // "sale" | "rent"
+  status     String @default("active") // "active" | "completed" | "cancelled"
+  salePrice  Float  @default(0)
+  totalPaid  Float  @default(0)
+  totalDue   Float  @default(0)
+  date       String @default("")
+  notes      String @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@map("property_sales")
+}
+
+// ─── Agent ─────────────────────────────────────────────────
+model Agent {
+  id         String @id @default(cuid())
+  name       String
+  role       String @default("")
+  dealsCount Int    @default(0)
+  imageUrl   String @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("agents")
+}
+
+// ─── Settings (Singleton) ──────────────────────────────────
+model SiteSettings {
+  id           String @id @default("default")
+  primaryColor String @default("#C5A46D")
+  logoText     String @default("Estate")
+  logoAccent   String @default("Luxe")
+  logoImage    String @default("")
+  updatedAt    DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+// ─── Contact Messages ──────────────────────────────────────
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+
+  @@map("contact_messages")
+}
+
+// ─── Listing Requests ──────────────────────────────────────
+model ListingRequest {
+  id           String   @id @default(cuid())
+  title        String
+  category     String   // "apartment" | "building" | "villa" | "studio"
+  listingType  String   // "sale" | "rent"
+  price        Float    @default(0)
+  location     String   @default("")
+  bedrooms     Int      @default(0)
+  bathrooms    Int      @default(0)
+  sqft         Int      @default(0)
+  description  String   @default("")
+  images       String[] @default([])
+  contactName  String
+  contactPhone String
+  contactEmail String   @default("")
+  status       String   @default("pending") // "pending" | "approved" | "rejected"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("listing_requests")
+}
