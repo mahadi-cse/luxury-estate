@@ -16,6 +16,7 @@ const contactRoutes = require("./modules/contact/contact.routes");
 const listingRequestRoutes = require("./modules/listing-request/listingRequest.routes");
 const uploadRoutes = require("./modules/upload/upload.routes");
 const dashboardRoutes = require("./modules/dashboard/dashboard.routes");
+const trackerRoutes = require("./modules/tracker/tracker.routes");
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -38,6 +39,7 @@ app.use("/api/contacts", contactRoutes);
 app.use("/api/listing-requests", listingRequestRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/tracker", trackerRoutes);
 
 // ─── Health Check ──────────────────────────────────────────
 app.get("/api/health", (req, res) => {

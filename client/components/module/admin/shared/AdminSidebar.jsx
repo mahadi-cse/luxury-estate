@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/lib/context/AppProvider";
@@ -9,6 +10,7 @@ const navItems = [
   { label: "Properties", href: "/admin/properties", icon: "properties" },
   { label: "Property Sales", href: "/admin/sales", icon: "sales" },
   { label: "Customers", href: "/admin/customers", icon: "customers" },
+  { label: "Daily Tracker", href: "/admin/tracker", icon: "tracker" },
   { label: "Settings", href: "/admin/settings", icon: "settings" },
 ];
 
@@ -37,6 +39,12 @@ const icons = {
         d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
     </svg>
   ),
+  tracker: (
+    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+    </svg>
+  ),
   settings: (
     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -49,6 +57,30 @@ const icons = {
 export default function AdminSidebar({ onClose }) {
   const pathname = usePathname();
   const { settings } = useApp();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <aside className="w-64 bg-gray-900 text-white h-full flex flex-col">
+        <div className="p-5 border-b border-gray-800 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-serif font-bold text-gray-500">Luxe</span>
+            <span className="text-lg font-serif font-bold text-white">Estate</span>
+          </div>
+        </div>
+        <div className="flex-grow px-3 py-4 space-y-2">
+          <div className="h-9 bg-gray-800 rounded-lg animate-pulse" />
+          <div className="h-9 bg-gray-800 rounded-lg animate-pulse" />
+          <div className="h-9 bg-gray-800 rounded-lg animate-pulse" />
+          <div className="h-9 bg-gray-800 rounded-lg animate-pulse" />
+        </div>
+      </aside>
+    );
+  }
 
   return (
     <aside className="w-64 bg-gray-900 text-white h-full flex flex-col">

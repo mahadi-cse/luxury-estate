@@ -33,6 +33,9 @@ model Property {
   buildingDetail  BuildingDetail?
   apartmentDetail ApartmentDetail?
   sales           PropertySale[]
+  dailyActivities DailyActivity[]
+  accounts        ProjectAccount[]
+  challans        Challan[]
 
   @@map("properties")
 }
@@ -186,3 +189,68 @@ model ListingRequest {
 
   @@map("listing_requests")
 }
+
+// ─── Daily Activities ──────────────────────────────────────
+model DailyActivity {
+  id          String   @id @default(cuid())
+  propertyId  String
+  date        String
+  workDone    String
+  laborCount  Int      @default(0)
+  supervisor  String   @default("")
+  remarks     String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  property    Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  accounts    ProjectAccount[]
+  challans    Challan[]
+
+  @@map("daily_activities")
+}
+
+// ─── Project Accounts ──────────────────────────────────────
+model ProjectAccount {
+  id              String   @id @default(cuid())
+  propertyId      String
+  dailyActivityId String?
+  date            String
+  type            String   // "expense" | "income"
+  category        String   // "material" | "labor" | "utility" | "permit" | "other"
+  amount          Float
+  paymentMethod   String   // "cash" | "bank" | "check"
+  reference       String   @default("")
+  description     String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  property      Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  dailyActivity DailyActivity? @relation(fields: [dailyActivityId], references: [id], onDelete: SetNull)
+
+  @@map("project_accounts")
+}
+
+// ─── Challans ──────────────────────────────────────────────
+model Challan {
+  id              String   @id @default(cuid())
+  propertyId      String
+  dailyActivityId String?
+  challanNo       String
+  date            String
+  vendorName      String
+  materialName    String
+  quantity        Float
+  unit            String
+  totalCost       Float    @default(0)
+  receivedBy      String   @default("")
+  status          String   @default("received") // "received" | "pending" | "approved"
+  notes           String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  property      Property       @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  dailyActivity DailyActivity? @relation(fields: [dailyActivityId], references: [id], onDelete: SetNull)
+
+  @@map("challans")
+}
+
